@@ -1,9 +1,9 @@
 import crypto from "crypto";
-import { type RedisStore } from "../store";
+import { type RedisClientType } from "@redis/client";
 
 async function getSession(
   sessionId: string,
-  kv: RedisStore
+  kv: RedisClientType
 ): Promise<Session | null> {
   if (!sessionId) {
     return null;
@@ -22,7 +22,7 @@ async function getSession(
 
 async function deleteSession(
   sessionId: string,
-  kv: RedisStore
+  kv: RedisClientType
 ): Promise<number | null> {
   if (!sessionId) {
     return null;
@@ -33,7 +33,7 @@ async function deleteSession(
 async function updateSession(
   sessionId: string,
   data: Partial<SessionData>,
-  kv: RedisStore
+  kv: RedisClientType
 ): Promise<string | null> {
   if (!data) {
     return null;
@@ -65,7 +65,7 @@ export { getSession, deleteSession, updateSession };
 
 async function createSession(
   sessionId: string,
-  kv: RedisStore
+  kv: RedisClientType
 ): Promise<Session> {
   const session = {
     id: sessionId,

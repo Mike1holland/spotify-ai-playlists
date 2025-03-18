@@ -2,7 +2,7 @@ import type { RedisClientType } from "@redis/client";
 import { createClient } from "redis";
 
 let client: RedisClientType | null = null;
-async function getRedisStore(): Promise<RedisStore> {
+async function getRedisStore() {
   const config = getConfig();
   if (!client) {
     client = createClient(config);
@@ -11,14 +11,7 @@ async function getRedisStore(): Promise<RedisStore> {
   return client;
 }
 
-abstract class RedisStore {
-  abstract get(key: string): Promise<string | null>;
-  abstract set(key: string, value: string): Promise<any>;
-  abstract del(key: string): Promise<any>;
-  abstract setEx(key: string, seconds: number, value: string): Promise<any>;
-}
-
-export { getRedisStore, type RedisStore };
+export { getRedisStore };
 
 function getConfig() {
   const redisUrl = process.env.REDIS_URL;

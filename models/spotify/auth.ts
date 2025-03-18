@@ -1,4 +1,4 @@
-import SpotifyWebApi from "spotify-web-api-node";
+import type SpotifyWebApi from "spotify-web-api-node";
 
 function createAuthorizeURL(client: SpotifyWebApi, scopes: string[]) {
   const state = crypto.randomUUID();
