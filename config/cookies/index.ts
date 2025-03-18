@@ -3,4 +3,9 @@ const spotifyStateCookie = {
   maxAge: 60,
 };
 
-export { spotifyStateCookie };
+const sessionCookie = {
+  name: "session_id",
+  maxAge: 60 * 60 * 24 * 7,
+};
+
+export { spotifyStateCookie, sessionCookie };
