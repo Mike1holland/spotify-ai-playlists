@@ -7,14 +7,11 @@ import { getRedisStore } from "@/config/store";
 import { authorizationCodeGrant } from "@/models/spotify/auth";
 import { randomUUID } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type ResponseData = {
-  message: string;
-};
+import cookie from "cookie";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse
 ) {
   try {
     const client = getClient();
@@ -23,19 +20,22 @@ export default async function handler(
 
     if (!code || !state || Array.isArray(code) || Array.isArray(state)) {
       console.error("missing code or state");
-      return res.redirect("/");
+      res.redirect("/");
+      return;
     }
 
     const storedState = cookies[spotifyStateCookie.name];
 
     if (!storedState) {
       console.error("missing stored state");
-      return res.redirect("/");
+      res.redirect("/");
+      return;
     }
 
     if (state !== storedState) {
       console.error("state mismatch");
-      return res.redirect("/");
+      res.redirect("/");
+      return;
     }
 
     const { access_token, refresh_token, expires_in, scope } =
@@ -55,14 +55,18 @@ export default async function handler(
       redisStore
     );
 
-    return res
+    const { name, maxAge } = sessionCookie;
+
+    res
       .setHeader(
         "Set-Cookie",
-        `${sessionCookie.name}=${sessionId}; Max-Age=${sessionCookie.maxAge}; SameSite=Strict; HttpOnly; Secure`
+        cookie.serialize(name, sessionId, {
+          maxAge,
+        })
       )
       .redirect("/");
   } catch (e) {
     console.error(e);
-    return res.redirect("/");
+    res.redirect("/");
   }
 }

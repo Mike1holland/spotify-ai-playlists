@@ -3,6 +3,7 @@
 import { spotifyStateCookie } from "@/config/cookies";
 import { getClient } from "@/config/spotify";
 import { createAuthorizeURL } from "@/models/spotify/auth";
+import cookie from "cookie";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -20,14 +21,16 @@ export default async function handler(
 
     const { name, maxAge } = spotifyStateCookie;
 
-    return res
+    res
       .setHeader(
         "Set-Cookie",
-        `${name}=${state}; sameSite=strict; httpOnly=true; Max-Age=${maxAge}`
+        cookie.serialize(name, state, {
+          maxAge,
+        })
       )
       .redirect(url);
   } catch (error) {
     console.error(error);
-    return res.redirect("/");
+    res.redirect("/");
   }
 }
