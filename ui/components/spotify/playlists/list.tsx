@@ -37,8 +37,8 @@ const PlaylistList = ({ playlists }: PlaylistListProps) => {
       <select className="border-2 rounded-md p-4 w-full">
         {currPlaylists.map((playlist) => {
           const image =
-            playlist.images.find((image) => image.height === 60) ||
-            playlist.images.at(0);
+            playlist.images?.find((image) => image.height === 60) ||
+            playlist.images?.at(0);
           const isSelected = selectedPlaylist === playlist.id;
           return (
             <option selected={isSelected} key={playlist.id} value={playlist.id}>
