@@ -62,6 +62,10 @@ export default async function handler(
         "Set-Cookie",
         cookie.serialize(name, sessionId, {
           maxAge,
+          sameSite: "strict",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
         })
       )
       .redirect("/");
