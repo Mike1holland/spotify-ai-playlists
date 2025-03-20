@@ -10,13 +10,17 @@ export default async function handler(
   try {
     const sessionId = req.cookies.session_id;
     if (!sessionId) {
-      res.redirect("/");
+      res.status(401).json({
+        error: "Unauthorized",
+      });
       return;
     }
     const redisStore = await getRedisStore();
     const session = await getSession(sessionId, redisStore);
     if (!session || !session.data) {
-      return res.redirect("/");
+      res.status(401).json({
+        error: "Unauthorized",
+      });
       return;
     }
     const client = getClient({
@@ -50,6 +54,8 @@ export default async function handler(
     });
   } catch (e) {
     console.error(e);
-    res.redirect("/");
+    res.status(500).json({
+      error: "Internal Server Error",
+    });
   }
 }
